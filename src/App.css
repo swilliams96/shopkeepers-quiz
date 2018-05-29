@@ -109,7 +109,7 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 }
 
 .Answer a.selected p {
-	background-color: rgba(40,40,40,.5);
+	background-color: rgba(40,40,40,.65);
 }
 .Answer a.correct p {
 	background-color: rgba(80,200,40,.08);
@@ -158,6 +158,6 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 @media(min-width: 767px) {
 	html {
 		background-size: cover;
-		background-image: url('/img/stone-wall-dark.jpg');
+		background-image: url('img/stone-wall-dark.jpg');
 	}
 }
