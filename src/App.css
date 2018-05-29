@@ -1,0 +1,160 @@
+html, body {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	/*background: linear-gradient(40deg, #cc542b, #a12c1a);*/
+	background: linear-gradient(30deg, rgba(20, 31, 26, 0.9), rgba(16, 20, 19, 0.98));
+	text-align: center;
+}
+
+.Loader {
+	font-size: 12px;
+	color: rgba(255,255,255,.2);
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+
+.right-align {
+	float: right;
+	text-align: right;
+}
+
+::selection {
+	background: rgba(50,50,50,0.6);
+}
+
+img::selection, .PanelHeader *::selection, .Answer *::selection {
+	background: transparent;
+}
+
+
+.App {
+	padding-top: calc(40vh - 150px);
+}
+
+.Panel {
+	width: 100%;
+	max-width: 500px;
+	min-height: 300px;
+	background: rgba(15,15,15,.6);
+	border-radius: 6px;
+	border: 1px solid rgba(78, 102, 96, 0.65);
+	margin: 0 auto;
+	color: rgba(255,255,255,.9);
+	font-family: 'Rubik', sans-serif;
+	font-size: 16px;
+	font-weight: 100;
+}
+
+.PanelHeader, .PanelBody {
+	width: 100%;
+}
+
+.PanelHeader {
+	width: 100%;
+	min-height: 32px;
+	line-height: 32px;
+	border-bottom: 1px solid rgba(78, 102, 96, 0.65);
+	color: rgba(255,255,255,.5);
+	text-align: left;
+}
+
+.PanelHeader b {
+	font-size: 14px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.PanelHeader * {
+	margin: 0 8px;
+}
+
+.PanelBody {
+	width: calc(100% - 20px);
+	padding: 20px 10px;
+}
+
+.PanelBody h1 {
+	font-weight: 400;
+	font-size: 22px;
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+.PanelBody .image {
+	max-width: 120px;
+	margin-bottom: 14px;
+}
+
+.AnswerContainer {
+	max-width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.Answer {
+	flex-grow: 1;
+	min-width: 150px;
+	/*width: calc(50% - 20px - 2px);*/
+	line-height: 60px;
+	border: 1px solid rgba(78, 102, 96, 0.65);
+	margin: 5px;
+}
+
+.Answer a.selected p {
+	background-color: rgba(40,40,40,.25);
+}
+.Answer a.correct p {
+	background-color: rgba(80,200,40,.25);
+}
+.Answer a.selected.incorrect p {
+	background-color: rgba(200,60,40,.25);
+}
+
+.Answer a {
+	-webkit-transition: all .1s;
+	-moz-transition: all .1s;
+	-ms-transition: all .1s;
+	-o-transition: all .1s;
+	transition: all .1s;
+}
+
+.Answer a.active {
+	cursor: pointer;
+}
+
+.Answer a.active:hover p {
+	background-color: rgba(40,40,40,.15);
+}
+
+.Answer .icon {
+	display: inline;
+	vertical-align: middle;
+	margin: 5px;
+	max-width: 20px;
+}
+
+.Result {
+	min-height: 100px;
+}
+
+.Result .large-text {
+	line-height: 60px;
+	font-size: 32px;
+}
+
+
+
+@media(min-width: 767px) {
+	html {
+		background-size: cover;
+		background-image: url('/img/stone-wall-dark.jpg');
+	}
+}

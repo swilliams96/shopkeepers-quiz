@@ -1,0 +1,11 @@
+<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<filter height="200%" width="200%" y="-50%" x="-50%" id="svg_3_blur">
+			<feGaussianBlur stdDeviation="0" in="SourceGraphic"/>
+		</filter>
+	</defs>
+	<g>
+		<title>Mana</title>
+		<rect filter="url(#svg_3_blur)" stroke="#000" rx="12" id="svg_3" height="80" width="80" y="0" x="0" stroke-width="0" fill="#00e0e0"/>
+	</g>
+</svg>
