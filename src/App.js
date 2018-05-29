@@ -205,7 +205,6 @@ class Panel extends Component {
 	}
 
 	getNewQuestion() {
-		console.log("Getting new question...");
 		let question = questions[Math.floor(Math.random() * questions.length)];
 
 		let options = [], fillers = question["wrong"].slice();
