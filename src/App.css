@@ -16,11 +16,6 @@ body {
 	color: rgba(255,255,255,.2);
 }
 
-@keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
-}
-
 .right-align {
 	float: right;
 	text-align: right;
@@ -35,8 +30,10 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 }
 
 
-.App {
-	padding-top: calc(40vh - 150px);
+@media(min-height: 600px) {
+	.App {
+		padding-top: calc(40vh - 150px);
+	}
 }
 
 .Panel {
