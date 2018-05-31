@@ -10,7 +10,7 @@ import cooldown from './img/cooldown.png';
 import gold from './img/gold.png';
 
 const questions = QuestionData["questions"];
-const defaultTime = 15;
+const defaultTime = 12;
 
 function shuffle(array) {
 	var m = array.length, t, i;
@@ -184,6 +184,7 @@ class Panel extends Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.state = {
 			score: 0,
+			sessionScore: {correct: 0, incorrect: 0},
 			question: null,
 			countdown: null,
 			active: true,
@@ -253,7 +254,7 @@ class Panel extends Component {
 				this.checkAnswer();
 				this.setState({
 					active: false,
-					countdown: 6
+					countdown: 4
 				});
 			} else {
 				this.getNewQuestion();
