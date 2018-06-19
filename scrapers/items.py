@@ -99,7 +99,7 @@ for name, item in itemdictionary.items():
     img = soup.find('td', attrs={'id': 'itemmainimage'}).find('img')
     if img is not None:
         img_url = img['src'].split('?')[0]
-        print(name, '|', item.cost, '|', img_url)
+        print(name, ':', item.cost, ':', img_url)
         json += '\n      '
         json += '"question": "How much does {name} cost?",\n      '.format(name=name)
         json += '"image": "{url}",\n      '.format(url=img_url)
