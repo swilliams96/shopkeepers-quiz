@@ -21,81 +21,16 @@ class Ability:
 
     def getWrongAnswersMana(self, lvls=4):
         result = '['
-        result += '"' + str(self.generateFakeAnswerMana(1)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(3)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(4)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(lvls)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(lvls)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(lvls)) + '", '
-        result += '"' + str(self.generateFakeAnswerMana(lvls)) + '"]'
+        result += '"' + str(self.getWrongAnswerMana(1)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(3)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(4)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
+        result += '"' + str(self.getWrongAnswerMana(lvls)) + '"]'
         return result
 
-
-
-        if lvls == 1:                     # Get a base value for the first 'level' of the wrong answer
-            first = float(self.mana)
-            biggest = first
-            real_step = 0
-        else:
-            first = float(self.mana.split('/')[0])
-            biggest = first
-            for lvl in self.mana.split('/'):
-                if float(lvl) > biggest:
-                    biggest = lvl
-            real_step = float(self.mana.split('/')[0]) - float(self.mana.split('/')[1])
-        steps = []
-
-
-        if biggest <= 0:
-            return '[]'
-        if biggest <= 50:
-            upper = 200
-            lower = 5
-            steps = [5, 10]
-
-
-
-
-        if first <= 0:
-            return '[]'
-        if first > 0:
-            factor = 5
-            limit = 8
-            steps = [5]
-        if first >= 50:
-            factor = 10
-            limit = 10
-            steps = [5, 10]
-        if first >= 100:
-            factor = 10
-            limit = 15
-            steps = [10, 20, 25]
-            if first % 10 != 0:
-                steps = [10, 20, 30]
-        if first >= 250:
-            factor = 25
-            limit = 30
-            steps = [10, 20, 25, 30, 35, 50, 100]
-        if first >= 400:
-            factor = 10
-            limit = 30
-            steps = [20, 25, 30, 35, 50, 100]
-
-        if real_step != 0:
-            steps.append(real_step)
-
-        result = '['
-        count = random.randint(5, 8)
-        for r in range(0, count):
-            valid = False
-            while not valid:
-                x = random.randint(-limit, limit)
-                if x != 0 and result.find(str(self.mana + x*factor)) == -1 and (self.mana + x*factor) > 0:
-                    valid = True
-                    result += str(self.mana + x*factor) + ', '
-        return result[:-2] + ']'
-
-    def generateFakeAnswerMana(self, lvls=4):
+    def getWrongAnswerMana(self, lvls=4):
         if levels == 3:
             low = random.randint(4, 50) * 5         # Higher mana cost for ultimate abilities
         elif levels == 1:
