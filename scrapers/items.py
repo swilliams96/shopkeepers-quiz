@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import time
 import random
+import os
 
 class Item:
     def __init__(self, name, cost, url):
@@ -111,6 +112,8 @@ for name, item in itemdictionary.items():
 full_json = '{\n  "questions": [\n' + json[:-3] + '\n  ]\n}'
 print('JSON:\n\n' + full_json)
 
+if not os.path.exists('output'):
+    os.makedirs('output')
 f = open('output/itemcost-' + str(datetime.now().date().isoformat()) + '.json', 'w')
 f.write(full_json)
 
