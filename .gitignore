@@ -1,10 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# .idea
-.idea/tasks.xml
-.idea/workspace.xml
-.idea/dictionaries
-.idea/vcs.xml
+# JetBrains
+.idea
+**/.idea
 
 # dependencies
 /node_modules
