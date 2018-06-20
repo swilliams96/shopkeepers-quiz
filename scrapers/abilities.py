@@ -20,15 +20,24 @@ class Ability:
         self.img = img
 
     def getWrongAnswersMana(self, lvls=4):
-        result = '['
-        result += '"' + str(self.getWrongAnswerMana(1)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(3)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(4)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(lvls)) + '", '
-        result += '"' + str(self.getWrongAnswerMana(lvls)) + '"]'
+        count = 1
+        result = ''
+        while count <= 7:
+            if count == 1:
+                answer = str(self.getWrongAnswerMana(1))                        # One of each type...
+            elif count == 2:
+                answer = str(self.getWrongAnswerMana(3))
+            elif count == 3:
+                answer = str(self.getWrongAnswerMana(4))
+            else:
+                answer = str(self.getWrongAnswerMana(lvls))                     # Plus an extra four of the same type
+
+            if result.find(answer) == -1 and answer != self.mana:           # If this is a valid wrong answer...
+                count += 1                                                          # Allow the counter to progress
+                result += '"' + answer + '", '                                      # Add the wrong answer to the pool
+        result = '[' + result[:-2] + ']'
         return result
+
 
     def getWrongAnswerMana(self, lvls=4):
         if levels == 3:
@@ -39,7 +48,7 @@ class Ability:
             low = random.randint(1, 40) * 5
 
         if lvls == 1:
-            return low
+            return str(low)
 
         steps = [5]
         if low >= 25:
@@ -53,12 +62,76 @@ class Ability:
 
         values = []
         step = random.choice(steps)
-        for i in range(lvls):
-            values.append(low + (i * step))
+        for x in range(lvls):
+            values.append(low + (x * step))
 
         if low < 200 and random.random() < 0.4:                   # 40% chance to reverse order
             values.reverse()
-        return '/'.join(str(x) for x in values)
+        return '/'.join(str(v) for v in values)
+
+    def getWrongAnswersCooldown(self, lvls=4):
+        count = 1
+        result = ''
+        while count <= 7:
+            if count == 1:
+                answer = str(self.getWrongAnswerCooldown(1))                    # One of each type...
+            elif count == 2:
+                answer = str(self.getWrongAnswerCooldown(3))
+            elif count == 3:
+                answer = str(self.getWrongAnswerCooldown(4))
+            else:
+                answer = str(self.getWrongAnswerCooldown(lvls))                 # Plus an extra four of the same type
+
+            if result.find(answer) == -1 and answer != self.cooldown:           # If this is a valid wrong answer...
+                count += 1                                                          # Allow the counter to progress
+                result += '"' + answer + '", '                                      # Add the wrong answer to the pool
+        result = '[' + result[:-2] + ']'
+        return result
+
+    def getWrongAnswerCooldown(self, lvls=4):
+        correct_first = float(self.cooldown.split('/')[0])
+        if (correct_first % 5) == 0:                        # If the cooldown is divisible by 5...
+            if lvls == 3:
+                low = random.randint(2, 24) * 5                 # Higher cooldown for ultimate abilities
+            elif lvls == 1:
+                low = random.randint(1, 50) * 5                 # Wider range for single scaling abilities
+                return str(low)
+            else:
+                low = random.randint(1, 40) * 5
+        else:                                               # Otherwise...
+            if lvls == 3:
+                low = random.randint(5, 60) * 2                 # Higher cooldown for ultimate abilities
+            elif lvls == 1:
+                low = random.randint(2, 70) * 2                 # Wider range for single scaling abilities
+                return str(low)
+            else:
+                low = random.randint(1, 30) * 2
+
+        steps = [1]
+        if low >= 6:
+            steps.extend([2, 3, 4, 5])
+        if low >= 12:
+            steps.extend([2, 4, 6, 10, 12])
+        if low >= 30:
+            steps.extend([15, 15, 20, 25, 30, 35])
+        if low >= 45:
+            steps.extend([30, 30, 60])
+
+        if (correct_first % 10) == 0:
+            steps = [2, 3, 4, 5, 5, 10, 15]
+            if low >= 30 and lvls != 4:
+                steps.extend([10, 15, 15, 20, 25, 30, 30, 35, 45, 60])
+
+        values = []
+        step = random.choice(steps)
+        for x in range(lvls):
+            values.append(low + (x * step))
+
+        if low < 200 and random.random() < 0.7:                   # 70% chance to reverse order
+            values.reverse()
+        return '/'.join(str(v) for v in values)
+
+
 
 
 herodictionary = {}
@@ -152,10 +225,8 @@ for key, hero in herodictionary.items():
         elem_prev = elem
     time.sleep(0.33)
 
-# TODO: loop through heroes and generate questions on ability mana costs and cooldowns like in items.py
-
-print('\nGenerating questions...\n\n')
 json = '    {'
+print('\nGenerating mana cost questions...\n')
 for i, hero in herodictionary.items():
     for ability in hero.abilities:
         # Skip abilities with no mana cost
@@ -166,7 +237,6 @@ for i, hero in herodictionary.items():
             continue
 
         levels = ability.mana.count('/') + 1
-        print(hero.name, ' ' * (20 - len(hero.name)), ability.name, ' ' * (20 - len(ability.name)), end='')
 
         json += '\n      '
         json += '"question": "What is the mana cost of {name}?",\n      '.format(name=ability.name)
@@ -175,8 +245,27 @@ for i, hero in herodictionary.items():
         json += '"wrong": {wronganswers}\n    '.format(wronganswers=ability.getWrongAnswersMana(levels))
         json += '}, {'
 
+print('Generating cooldown questions...\n')
+for i, hero in herodictionary.items():
+    for ability in hero.abilities:
+        # Skip abilities with no mana cost
+        if ability.cooldown == 'NO_COOLDOWN' or ability.cooldown == '0':
+            continue
+        # Skip abilities with words in the scraped mana cost (only accept format similar to 00/00/00)
+        if any(c.isalpha() for c in ability.cooldown):
+            continue
+
+        levels = ability.cooldown.count('/') + 1
+
+        json += '\n      '
+        json += '"question": "What is the cooldown of {name}?",\n      '.format(name=ability.name)
+        json += '"image": "{url}",\n      '.format(url=ability.img)
+        json += '"type": "cooldown",\n      "correct": "{cooldown}",\n      '.format(cooldown=ability.cooldown)
+        json += '"wrong": {wronganswers}\n    '.format(wronganswers=ability.getWrongAnswersCooldown(levels))
+        json += '}, {'
+
 full_json = '{\n  "questions": [\n' + json[:-3] + '\n  ]\n}'
-print('JSON:\n\n' + full_json)
+print('\nJSON:\n\n' + full_json)
 
 if not os.path.exists('output'):
     os.makedirs('output')
