@@ -124,7 +124,7 @@ class Result extends Component {
 
 class Question extends Component {
 	render() {
-		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} alt=""/> : '');
+		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} alt="" draggable="false"/> : '');
 		return (
 			<div className="Question">
 				<h1>{this.props.data["question"]}</h1>
