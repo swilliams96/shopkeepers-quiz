@@ -8,7 +8,7 @@ All questions are periodically regenerated from information on the [DOTA 2 Gamep
 ### Contributing
 This project was primarily started to help teach myself various JavaScript frameworks, but feel free to contribute and help to improve the app!
 
-This repo contains the front-end React.js code. If you would like to contirbute to the backend instead, the Express.js API and python scrapers (that collect the information from the wiki and generate the questions) are available in a separate repo at: [swilliams96/shopkeepers-quiz-server-js](https://github.com/swilliams96/shopkeepers-quiz-server-js/)
+This repo contains the front-end React.js code. If you would like to contirbute to the backend instead, the Express.js API and python scrapers (that collect the information from the wiki and generate the questions) are available in a separate repo at: [swilliams96/shopkeepers-quiz-server](https://github.com/swilliams96/shopkeepers-quiz-server/)
 
 
 ---
