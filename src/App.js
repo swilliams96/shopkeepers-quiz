@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
 import './reset.css';
 import './loader.css';
 import './App.css';
-
-import QuestionData from './QuestionData.json';
 
 import mana from './img/mana.png';
 import cooldown from './img/cooldown.png';
 import gold from './img/gold.png';
 
-const questions = QuestionData["questions"];
+const API_BASE_URL = "http://skq-api.codebysam.co.uk"
+//const questions = {QuestionData["questions"]};
+var questions = {};
 const defaultTime = 12;
 
 function shuffle(array) {
 	var m = array.length, t, i;
-	while (m) {																// While there remain elements to shuffle…
-		i = Math.floor(Math.random() * m--);		// Pick a remaining element…
-		t = array[m];														// And swap it...
-		array[m] = array[i];										// ...with the...
-		array[i] = t;														// ...current element.
+	while (m) {											// While there remain elements to shuffle…
+		i = Math.floor(Math.random() * m--);			// Pick a remaining element…
+		t = array[m];									// And swap it...
+		array[m] = array[i];							// ...with the...
+		array[i] = t;									// ...current element.
 	}
 	return array;
 }
@@ -71,10 +73,12 @@ class AnswerContainer extends Component {
 		);
 	}
 
-	getAnswers() {
+	renderAnswers() {
 		let options = this.props.data["answers"], answers = [];
-		for (let i = 0; i < options.length; i++) {
-			answers.push(this.renderAnswer(options[i], i));
+		if (options) {
+			for (let i = 0; i < options.length; i++) {
+				answers.push(this.renderAnswer(options[i], i));
+			}
 		}
 		return answers;
 	}
@@ -82,7 +86,7 @@ class AnswerContainer extends Component {
 	render() {
 		return (
 			<div className="AnswerContainer">
-				{this.getAnswers()}
+				{this.renderAnswers()}
 			</div>
 		);
 	}
@@ -194,7 +198,7 @@ class Panel extends Component {
 	}
 
 	componentDidMount() {
-		this.getNewQuestion();
+		this.getNewQuestions();
 		this.timerID = setInterval(
 			() => this.tick(),
 			1000
@@ -205,26 +209,94 @@ class Panel extends Component {
 		clearInterval(this.timerID);
 	}
 
+	/*
 	getNewQuestion() {
 		let question = questions[Math.floor(Math.random() * questions.length)];
 
-		let options = [], fillers = question["wrong"].slice();
-		options.push(question["correct"]);											// Add correct answer to the options
-		for (let i = 0; i < 3; i++) {														// Loop through wrong answers and pick 3 at random
+		let options = [], fillers = question["incorrect"].slice();
+		options.push(question["correct"]);										// Add correct answer to the options
+		for (let i = 0; i < 3; i++) {											// Loop through wrong answers and pick 3 at random
 			let x = Math.floor(Math.random() * fillers.length);
 			options.push(fillers[x]);
 			fillers.splice(x, 1);
 		}
 
 		question["answers"] = shuffle(options);									// Shuffle the final options and add them to the array
-		let countdown = (question["time"] || defaultTime);			// Get the countdown time for this question
+		let countdown = (question["time"] || defaultTime);						// Get the countdown time for this question
 
-		this.setState({																					// Start the new question
+		this.setState({															// Start the new question
 			question: question,
 			selected: null,
 			countdown: countdown,
 			active: true,
 			correct: null
+		});
+	}
+	*/
+
+	getNewQuestions() {
+		console.log("GET " + API_BASE_URL + "/questions/live");
+		axios.get(API_BASE_URL + "/questions/live")
+			.then(res => {
+				console.log("    ... RESPONSE RECEIVED");
+				//console.log(res["data"]);
+				questions = res["data"]["questions"];
+				this.updateCurrentQuestion();
+			});
+	}
+
+	updateCurrentQuestion() {
+		if (questions.length === 0) {
+			console.log("Requesting questions from the API...");
+			this.getNewQuestions();
+			return;
+		}
+
+		let now = Math.round((new Date()).getTime() / 1000);
+		let futureQuestions = 0;
+
+		this.setState({ question: null });
+		questions.forEach(question => {
+			if (question["finish"] > now) {
+				if (question["start"] <= now + 1) {
+					this.setNewQuestion(question);
+					return;
+				}
+				futureQuestions++;
+			}
+		});
+
+		if (futureQuestions === 0) {
+			console.log("Current question list is out of date, requesting new questions from the API...");
+			this.getNewQuestions();
+		}
+	}
+
+	setNewQuestion(question) {
+		if (question == null || question["question"] == null) return null;
+
+		let now = Math.round((new Date()).getTime() / 1000);
+		let options = [], fillers = question["question"]["incorrect"].slice();
+
+		console.log("Setting new question... (" + now + ")");
+		//console.log(question);
+
+		options.push(question["question"]["correct"]);						// Add correct answer to the options
+		for (let i = 0; i < 3; i++) {										// Loop through wrong answers and pick 3 at random
+			let x = Math.floor(Math.random() * fillers.length);
+			options.push(fillers[x]);
+			fillers.splice(x, 1);
+		}
+
+		question["question"]["answers"] = shuffle(options);					// Shuffle the final options and add them to a new "answers" property
+
+		this.setState({		
+			question: question["question"],
+			answers: question["question"]["answers"],
+			selected: null,
+			correct: null,
+			countdown: (question["finish"] - now),
+			active: true
 		});
 	}
 
@@ -250,14 +322,15 @@ class Panel extends Component {
 
 	tick() {
 		if (this.state.countdown <= 0) {
-			if (this.state.correct === null) {
+			if (this.state.correct === null && this.state.question) {
 				this.checkAnswer();
 				this.setState({
 					active: false,
 					countdown: 4
 				});
 			} else {
-				this.getNewQuestion();
+				//this.getNewQuestion();
+				this.updateCurrentQuestion();
 			}
 		}
 
@@ -280,7 +353,7 @@ class Panel extends Component {
 }
 
 
-class App extends Component {
+export default class App extends Component {
   render() {
     return (
     	<div className="App">
@@ -290,4 +363,3 @@ class App extends Component {
   }
 }
 
-export default App;

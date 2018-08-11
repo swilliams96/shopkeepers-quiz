@@ -1,0 +1,14 @@
+#creditlink {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    padding: 12px 18px;
+    font-family: 'Rubik', sans-serif;
+    font-weight: 100;
+    font-size: 12px;
+    border-bottom-left-radius: 8px;
+    background-color: rgba(0,0,0,.7);
+    color: #a8d6e0;
+    text-decoration: none;
+}
