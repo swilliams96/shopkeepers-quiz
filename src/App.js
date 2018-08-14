@@ -9,7 +9,7 @@ import mana from './img/mana.png';
 import cooldown from './img/cooldown.png';
 import gold from './img/gold.png';
 
-const API_BASE_URL = "http://skq-api.codebysam.co.uk"
+const API_BASE_URL = "https://skq-api.codebysam.co.uk"
 //const questions = {QuestionData["questions"]};
 var questions = {};
 const defaultTime = 12;
