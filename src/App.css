@@ -90,6 +90,11 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 	margin-bottom: 14px;
 }
 
+.Question {
+	transition: 0.5s all;
+	/* min-height: 171px; */
+}
+
 .AnswerContainer {
 	max-width: 100%;
 	display: flex;

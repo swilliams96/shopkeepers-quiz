@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import shuffle from 'shuffle-array';
 
 import './reset.css';
 import './loader.css';
@@ -10,21 +11,8 @@ import cooldown from './img/cooldown.png';
 import gold from './img/gold.png';
 
 const API_BASE_URL = "https://skq-api.codebysam.co.uk"
-//const questions = {QuestionData["questions"]};
 var questions = {};
 const defaultTime = 12;
-
-function shuffle(array) {
-	var m = array.length, t, i;
-	while (m) {											// While there remain elements to shuffle…
-		i = Math.floor(Math.random() * m--);			// Pick a remaining element…
-		t = array[m];									// And swap it...
-		array[m] = array[i];							// ...with the...
-		array[i] = t;									// ...current element.
-	}
-	return array;
-}
-
 
 
 /* * * * * * * * * * * * * * * * */
@@ -128,9 +116,11 @@ class Result extends Component {
 
 class Question extends Component {
 	render() {
-		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} alt="" draggable="false"/> : '');
+		const imgStyle = (this.props.data["type"] === "gold" ? { marginTop: 30, marginBottom: 42 } : { marginTop: 5, marginBottom: 10 });
+		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} style={imgStyle} alt="" draggable="false"/> : '');
+
 		return (
-			<div className="Question">
+			<div className="Question" style={{ minHeight: 175 }}>
 				<h1>{this.props.data["question"]}</h1>
 				{image}
 			</div>
@@ -209,37 +199,11 @@ class Panel extends Component {
 		clearInterval(this.timerID);
 	}
 
-	/*
-	getNewQuestion() {
-		let question = questions[Math.floor(Math.random() * questions.length)];
-
-		let options = [], fillers = question["incorrect"].slice();
-		options.push(question["correct"]);										// Add correct answer to the options
-		for (let i = 0; i < 3; i++) {											// Loop through wrong answers and pick 3 at random
-			let x = Math.floor(Math.random() * fillers.length);
-			options.push(fillers[x]);
-			fillers.splice(x, 1);
-		}
-
-		question["answers"] = shuffle(options);									// Shuffle the final options and add them to the array
-		let countdown = (question["time"] || defaultTime);						// Get the countdown time for this question
-
-		this.setState({															// Start the new question
-			question: question,
-			selected: null,
-			countdown: countdown,
-			active: true,
-			correct: null
-		});
-	}
-	*/
-
 	getNewQuestions() {
 		console.log("GET " + API_BASE_URL + "/questions/live");
 		axios.get(API_BASE_URL + "/questions/live")
 			.then(res => {
 				console.log("    ... RESPONSE RECEIVED");
-				//console.log(res["data"]);
 				questions = res["data"]["questions"];
 				this.updateCurrentQuestion();
 			});
@@ -279,13 +243,18 @@ class Panel extends Component {
 		let options = [], fillers = question["question"]["incorrect"].slice();
 
 		console.log("Setting new question... (" + now + ")");
-		//console.log(question);
 
 		options.push(question["question"]["correct"]);						// Add correct answer to the options
-		for (let i = 0; i < 3; i++) {										// Loop through wrong answers and pick 3 at random
-			let x = Math.floor(Math.random() * fillers.length);
-			options.push(fillers[x]);
-			fillers.splice(x, 1);
+		if (question["question"]["incorrect"].length > 3) {
+			for (let i = 0; i < 3; i++) {									// Loop through wrong answers and pick 3 at random
+				let x = Math.floor(Math.random() * fillers.length);
+				options.push(fillers[x]);
+				fillers.splice(x, 1);
+			}
+		} else {
+			question["question"]["incorrect"].forEach(function(option) {	// Add the three incorrect answers to the options
+				options.push(option);
+			});
 		}
 
 		question["question"]["answers"] = shuffle(options);					// Shuffle the final options and add them to a new "answers" property
@@ -329,7 +298,6 @@ class Panel extends Component {
 					countdown: 4
 				});
 			} else {
-				//this.getNewQuestion();
 				this.updateCurrentQuestion();
 			}
 		}
