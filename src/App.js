@@ -1,19 +1,22 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import shuffle from 'shuffle-array';
+import React, { Component } from "react";
+import axios from "axios";
+import shuffle from "shuffle-array";
 
-import './reset.css';
-import './loader.css';
-import './App.css';
+import "./reset.css";
+import "./loader.css";
+import "./App.css";
 
-import mana from './img/mana.png';
-import cooldown from './img/cooldown.png';
-import gold from './img/gold.png';
+import mana from "./img/mana.png";
+import cooldown from "./img/cooldown.png";
+import gold from "./img/gold.png";
 
 const API_BASE_URL = "https://skq-api.codebysam.co.uk"
 var questions = {};
 const defaultTime = 12;
+const uuid = require("uuid/v4");
+const USER_ID = uuid().toUpperCase();
 
+console.log(USER_ID);
 
 /* * * * * * * * * * * * * * * * */
 /* * * * REACT COMPONENTS  * * * */
@@ -90,8 +93,8 @@ class Result extends Component {
 			secs = secs - 60;
 			mins++;
 		}
-		if (secs < 10) secs = '0' + secs;
-		return mins + ':' + secs;
+		if (secs < 10) secs = "0" + secs;
+		return mins + ":" + secs;
 	}
 
 	render() {
@@ -117,7 +120,7 @@ class Result extends Component {
 class Question extends Component {
 	render() {
 		const imgStyle = (this.props.data["type"] === "gold" ? { marginTop: 30, marginBottom: 42 } : { marginTop: 5, marginBottom: 10 });
-		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} style={imgStyle} alt="" draggable="false"/> : '');
+		const image = (this.props.data["image"] ? <img src={this.props.data["image"]} className={"image"} style={imgStyle} alt="" draggable="false"/> : "");
 
 		return (
 			<div className="Question" style={{ minHeight: 175 }}>
@@ -274,6 +277,16 @@ class Panel extends Component {
 			this.setState({
 				active: false,
 				selected: answer
+			});
+			
+			fetch(API_BASE_URL + "/answer", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					id: this.state.question.id,
+					answer: answer,
+					userid: USER_ID
+				})
 			});
 		}
 	}
