@@ -12,7 +12,6 @@ import gold from "./img/gold.png";
 
 const API_BASE_URL = "https://skq-api.codebysam.co.uk"
 var questions = {};
-const defaultTime = 12;
 const uuid = require("uuid/v4");
 const USER_ID = uuid().toUpperCase();
 
@@ -278,15 +277,11 @@ class Panel extends Component {
 				active: false,
 				selected: answer
 			});
-			
-			fetch(API_BASE_URL + "/answer", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					id: this.state.question.id,
-					answer: answer,
-					userid: USER_ID
-				})
+
+			axios.post(API_BASE_URL + "/answer", {
+				id: this.state.question.id,
+				answer: answer,
+				userid: USER_ID
 			});
 		}
 	}
