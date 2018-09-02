@@ -1,14 +1,37 @@
+html, body {
+    height: 100%;
+    position: relative;
+}
+
+/* Box will show when height is over 600px or width 767px */
 #codebysam-link {
+    display:none;
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
     z-index: 100;
     padding: 12px 18px;
     font-family: 'Rubik', sans-serif;
     font-weight: 100;
     font-size: 12px;
-    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
     background-color: rgba(0,0,0,.7);
     color: #a8d6e0;
     text-decoration: none;
+}
+
+@media(min-height:600px) {
+    #codebysam-link {
+        display: block;
+        top: 0;
+        bottom: unset;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 8px;
+    }
+}
+
+@media(min-width: 767px) {
+    #codebysam-link {
+        display: block;
+    }
 }
