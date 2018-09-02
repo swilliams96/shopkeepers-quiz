@@ -111,10 +111,10 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 }
 
 .Answer a.selected p {
-	background-color: rgba(40,40,40,.65);
+	background-color: rgba(90,90,90,.7);
 }
 .Answer a.correct p {
-	background-color: rgba(80,200,40,.08);
+	background-color: rgba(80,200,40,.12);
 }
 .Answer a.selected.correct p {
 	background-color: rgba(80,200,40,.25);
