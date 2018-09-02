@@ -32,7 +32,7 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 
 @media(min-height: 600px) {
 	.App {
-		padding-top: calc(40vh - 150px);
+		padding-top: calc(30vh - 100px);
 	}
 }
 

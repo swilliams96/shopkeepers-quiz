@@ -229,10 +229,8 @@ class Panel extends Component {
 	}
 
 	getNewQuestions() {
-		console.log("GET " + API_BASE_URL + "/questions/live");
 		axios.get(API_BASE_URL + "/questions/live")
 			.then(res => {
-				console.log("    ... RESPONSE RECEIVED");
 				questions = res["data"]["questions"];
 				this.updateCurrentQuestion();
 			});
@@ -240,7 +238,7 @@ class Panel extends Component {
 
 	updateCurrentQuestion() {
 		if (questions.length === 0) {
-			console.log("Requesting questions from the API...");
+			console.log("Requesting questions...");
 			this.getNewQuestions();
 			return;
 		}
@@ -327,7 +325,6 @@ class Panel extends Component {
 		}
 	}
 
-	// Get other people's previous answers to show to the player
 	getPreviousAnswers() {
 		if (this.state.question == null) return;
 
@@ -339,12 +336,13 @@ class Panel extends Component {
 					prevAnswers.forEach(ans => {
 						if (ans.answer === this.state.selected)
 							myAnswerCount = ans.count;
-						totalAnswerCount += ans.count;
+						if (this.state.question["answers"].includes(ans.answer))
+							totalAnswerCount += ans.count;
 					});
 
-					if ((myAnswerCount/totalAnswerCount) !== 0 && (myAnswerCount/totalAnswerCount) !== 1) {
+					let prevAnswerRatio = (myAnswerCount/totalAnswerCount);
+					if (prevAnswerRatio > 0 && prevAnswerRatio < 1) {
 						this.setState({ prevAnswers: prevAnswers });
-						console.log(prevAnswers);
 					}
 				}
 			});
