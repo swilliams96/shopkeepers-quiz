@@ -29,10 +29,9 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 	background: transparent;
 }
 
-
 @media(min-height: 600px) {
 	.App {
-		padding-top: calc(30vh - 100px);
+		padding-top: calc(20vh - 60px);
 	}
 }
 
@@ -188,5 +187,9 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 	html {
 		background-size: cover;
 		background-image: url('img/stone-wall-dark.jpg');
+	}
+
+	.Panel {
+		width: 100%;
 	}
 }
