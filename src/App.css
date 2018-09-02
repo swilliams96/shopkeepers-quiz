@@ -146,6 +146,33 @@ img::selection, .PanelHeader *::selection, .Answer *::selection {
 	max-width: 20px;
 }
 
+.Answer .PreviousAnswerContainer {
+	font-size: 10px;
+	line-height: 12px;
+	height: 12px;
+	width: 100%;
+	margin-top: -12px;
+	position: relative;
+	color: rgba(255,255,255,.7);
+}
+
+.Answer .PreviousAnswerLabel {
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	padding-left: 4px;
+	z-index: 20;
+}
+
+.Answer .PreviousAnswerBar {
+	position: absolute;
+	background: -moz-linear-gradient(left, rgba(177,214,197,0.2), rgba(177,214,197,0.4));
+	background: -webkit-linear-gradient(left, rgba(177,214,197,0.2),rgba(177,214,197,0.4));
+	background: linear-gradient(to right, rgba(177,214,197,0.2),rgba(177,214,197,0.4)); 
+	height: 100%;
+	z-index: 10;
+}
+
 .Result {
 	min-height: 100px;
 }

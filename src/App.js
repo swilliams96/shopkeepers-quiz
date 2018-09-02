@@ -34,6 +34,18 @@ class Answer extends Component {
 		return;
 	}
 
+	getPrevAnswerBar (percentage) {
+		if (percentage > 0) {
+			return (
+				<div className="PreviousAnswerContainer" style={{ flexDirection: "row" }}>
+					<div className="PreviousAnswerLabel">{percentage}%</div>
+					<div className="PreviousAnswerBar" style={{width: percentage + "%"}}></div>
+				</div>
+			);
+		}
+		return;
+	}
+
 	render() {
 		const icon = (this.props.type !== "" ? this.getIcon(this.props.type) : "");
 		return (
@@ -41,6 +53,7 @@ class Answer extends Component {
 				<a onClick={() => this.props.handleClick(this.props.value)} className={this.props.className || (this.props.active ? "active" : "")}>
 					<p>{icon}{this.props.value}</p>
 				</a>
+			{this.getPrevAnswerBar(this.props.prevAnswerPercentage)}
 			</div>
 		);
 	}
@@ -48,7 +61,7 @@ class Answer extends Component {
 
 
 class AnswerContainer extends Component {
-	renderAnswer(answer, key) {
+	renderAnswer(answer, key, prevAnswerPercentage) {
 		let className = (answer === this.props.selected ? "selected " : "");
 		if (this.props.correctAnswer)
 			className += (answer === this.props.correctAnswer ? "correct" : "incorrect");
@@ -59,7 +72,8 @@ class AnswerContainer extends Component {
 							handleClick={this.props.handleClick}
 							active={this.props.active}
 							type={this.props.data["type"]}
-							className={className} />
+							className={className}
+							prevAnswerPercentage={prevAnswerPercentage} />
 		);
 	}
 
@@ -67,7 +81,19 @@ class AnswerContainer extends Component {
 		let options = this.props.data["answers"], answers = [];
 		if (options) {
 			for (let i = 0; i < options.length; i++) {
-				answers.push(this.renderAnswer(options[i], i));
+				let prevAnswerPercentage = 0;
+				if (this.props.prevAnswers) {
+					let totalAnswerCount = 0, myAnswerCount;
+					this.props.prevAnswers.forEach(prevAnswer => {
+						if (prevAnswer.answer === options[i]) {
+							myAnswerCount = prevAnswer.count;
+						}
+						totalAnswerCount += prevAnswer.count;
+					});
+					prevAnswerPercentage = Math.round((myAnswerCount/totalAnswerCount) * 100);
+				}
+
+				answers.push(this.renderAnswer(options[i], i, prevAnswerPercentage));
 			}
 		}
 		return answers;
@@ -151,7 +177,8 @@ class PanelBody extends Component {
 													 active={this.props.active}
 													 handleClick={this.props.handleClick}
 													 selected={this.props.selected}
-													 correctAnswer={this.props.correct !== null ? this.props.question["correct"] : ""}/>
+													 correctAnswer={this.props.correct !== null ? this.props.question["correct"] : ""}
+													 prevAnswers={this.props.prevAnswers}/>
 					<Result correct={this.props.correct} countdown={this.props.countdown}/>
 				</div>
 			);
@@ -180,12 +207,12 @@ class Panel extends Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.state = {
 			score: 0,
-			sessionScore: {correct: 0, incorrect: 0},
 			question: null,
 			countdown: null,
 			active: true,
 			correct: null,
-			selected: null
+			selected: null,
+			prevAnswers: null
 		}
 	}
 
@@ -232,7 +259,8 @@ class Panel extends Component {
 			}
 		});
 
-		if (futureQuestions === 0) {
+		// When we are going to run out of questions soon retrieve the next ones
+		if (futureQuestions === 1) {
 			console.log("Current question list is out of date, requesting new questions from the API...");
 			this.getNewQuestions();
 		}
@@ -267,7 +295,8 @@ class Panel extends Component {
 			selected: null,
 			correct: null,
 			countdown: (question["finish"] - now),
-			active: true
+			active: true,
+			prevAnswers: null
 		});
 	}
 
@@ -287,6 +316,7 @@ class Panel extends Component {
 	}
 
 	checkAnswer() {
+		this.getPreviousAnswers();
 		if (this.state.selected === this.state.question["correct"]) {
 			this.setState((prevState) => ({
 				correct: true,
@@ -295,6 +325,29 @@ class Panel extends Component {
 		} else {
 			this.setState({correct: false});
 		}
+	}
+
+	// Get other people's previous answers to show to the player
+	getPreviousAnswers() {
+		if (this.state.question == null) return;
+
+		axios.get(API_BASE_URL + "/answer/" + this.state.question.id)
+			.then(res => {
+				let prevAnswers = res.data;
+				if (prevAnswers.length >= 0) {
+					let totalAnswerCount = 0, myAnswerCount = 0;
+					prevAnswers.forEach(ans => {
+						if (ans.answer === this.state.selected)
+							myAnswerCount = ans.count;
+						totalAnswerCount += ans.count;
+					});
+
+					if ((myAnswerCount/totalAnswerCount) !== 0 && (myAnswerCount/totalAnswerCount) !== 1) {
+						this.setState({ prevAnswers: prevAnswers });
+						console.log(prevAnswers);
+					}
+				}
+			});
 	}
 
 	tick() {
@@ -322,7 +375,8 @@ class Panel extends Component {
 									 active={this.state.active}
 									 correct={this.state.correct}
 									 handleClick={this.handleClick}
-									 countdown={this.state.countdown}/>
+									 countdown={this.state.countdown}
+									 prevAnswers={this.state.prevAnswers}/>
 			</div>
 		);
 	}
