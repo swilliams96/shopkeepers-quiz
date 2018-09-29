@@ -296,6 +296,8 @@ class Panel extends Component {
 			active: true,
 			prevAnswers: null
 		});
+
+		window.ga('send', 'event', 'Question', 'Loaded', question["question"]["id"]);
 	}
 
 	handleClick(answer) {
@@ -310,6 +312,8 @@ class Panel extends Component {
 				answer: answer,
 				userid: USER_ID
 			});
+
+			window.ga('send', 'event', 'Answer', 'Submitted', this.state.question.id);
 		}
 	}
 
