@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import Panel from './components/Panel';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import "./reset.css";
+import "./loader.css";
+import "./index.css";
+
+ReactDOM.render(<Panel />, document.getElementById('root'));
+
 registerServiceWorker();
